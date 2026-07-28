@@ -1,0 +1,44 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+
+# Testing and quality tools
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.bandit/
+
+# Runtime configuration and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.*
+
+# Generated operational artifacts
+reports/*
+!reports/.gitkeep
+logs/
+*.log
+opensearch-data/
+
+# IDE and operating system
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local pytest artifacts
+.pytest-temp/
+
+# Generated coverage reports
+coverage.xml

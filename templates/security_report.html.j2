@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infrastructure Security Analytics Report</title>
+    <style>
+        :root {
+            --background: #08111f;
+            --surface: #101c2e;
+            --surface-light: #17263c;
+            --border: #2b3d57;
+            --text: #e8eef7;
+            --muted: #9fb0c7;
+            --accent: #3bc7ff;
+            --critical: #ff496c;
+            --high: #ff8a3d;
+            --medium: #f5c451;
+            --low: #53c8a1;
+            --informational: #729df5;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--background);
+            color: var(--text);
+            font-family: Inter, Segoe UI, Arial, sans-serif;
+            line-height: 1.5;
+        }
+
+        .container {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 36px 0 60px;
+        }
+
+        .hero {
+            padding: 30px;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(59, 199, 255, 0.14),
+                    rgba(16, 28, 46, 0.96)
+                );
+            border: 1px solid var(--border);
+            border-radius: 18px;
+        }
+
+        h1, h2, h3 {
+            margin-top: 0;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            font-size: clamp(28px, 4vw, 44px);
+        }
+
+        .subtitle,
+        .metadata,
+        .muted {
+            color: var(--muted);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(190px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .summary-card,
+        .source-card,
+        .alert-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+        }
+
+        .summary-card {
+            padding: 20px;
+        }
+
+        .summary-value {
+            display: block;
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        section {
+            margin-top: 34px;
+        }
+
+        .source-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(240px, 1fr));
+            gap: 14px;
+        }
+
+        .source-card {
+            padding: 18px;
+        }
+
+        .source-card p {
+            margin: 6px 0 0;
+        }
+
+        .severity-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .severity-box {
+            padding: 16px;
+            border-radius: 12px;
+            background: var(--surface-light);
+            border-left: 5px solid var(--informational);
+        }
+
+        .severity-box.critical {
+            border-color: var(--critical);
+        }
+
+        .severity-box.high {
+            border-color: var(--high);
+        }
+
+        .severity-box.medium {
+            border-color: var(--medium);
+        }
+
+        .severity-box.low {
+            border-color: var(--low);
+        }
+
+        .alert-list {
+            display: grid;
+            gap: 18px;
+        }
+
+        .alert-card {
+            overflow: hidden;
+        }
+
+        .alert-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 18px 20px;
+            background: var(--surface-light);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .alert-body {
+            padding: 20px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge.critical {
+            background: rgba(255, 73, 108, 0.18);
+            color: var(--critical);
+        }
+
+        .badge.high {
+            background: rgba(255, 138, 61, 0.18);
+            color: var(--high);
+        }
+
+        .badge.medium {
+            background: rgba(245, 196, 81, 0.18);
+            color: var(--medium);
+        }
+
+        .badge.low {
+            background: rgba(83, 200, 161, 0.18);
+            color: var(--low);
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin: 18px 0;
+        }
+
+        .detail {
+            min-width: 0;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+        }
+
+        .detail strong {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        ul {
+            padding-left: 22px;
+        }
+
+        code {
+            color: var(--accent);
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .detail,
+        .alert-body {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        footer {
+            margin-top: 38px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        @media (max-width: 680px) {
+            .alert-header {
+                flex-direction: column;
+            }
+
+            .container {
+                width: min(100% - 24px, 1180px);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="hero">
+        <h1>Infrastructure Security Analytics Report</h1>
+        <p class="subtitle">
+            Correlated threat findings across AWS CloudTrail,
+            Linux authentication, and Cisco IOS telemetry.
+        </p>
+        <p class="metadata">
+            Generated: {{ generated_at | utc_datetime }} |
+            Pipeline duration: {{ duration_milliseconds }} ms
+        </p>
+    </header>
+
+    <section>
+        <h2>Analysis Summary</h2>
+        <div class="summary-grid">
+            <div class="summary-card">
+                <span class="summary-value">{{ event_count }}</span>
+                Events analyzed
+            </div>
+            <div class="summary-card">
+                <span class="summary-value">{{ alert_count }}</span>
+                Security alerts
+            </div>
+            <div class="summary-card">
+                <span class="summary-value">{{ rejected_count }}</span>
+                Rejected events
+            </div>
+            <div class="summary-card">
+                <span class="summary-value">
+                    {{ severity_counts.get("critical", 0) }}
+                </span>
+                Critical alerts
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Severity Distribution</h2>
+        <div class="severity-grid">
+            {% for severity in
+                ["critical", "high", "medium", "low", "informational"]
+            %}
+            <div class="severity-box {{ severity }}">
+                <strong>{{ severity | upper }}</strong>
+                <div>{{ severity_counts.get(severity, 0) }} alerts</div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section>
+        <h2>Log Sources</h2>
+        <div class="source-grid">
+            {% for source in source_summaries %}
+            <div class="source-card">
+                <h3>{{ source.name }}</h3>
+                <p>
+                    Parsed: <strong>{{ source.parsed_events }}</strong>
+                </p>
+                <p>
+                    Rejected:
+                    <strong>{{ source.rejected_events }}</strong>
+                </p>
+                <p class="muted"><code>{{ source.path.replace('\\', '/').split('/')[-1] }}</code></p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section>
+        <h2>Correlated Security Alerts</h2>
+        <div class="alert-list">
+            {% for alert in alerts %}
+            <article class="alert-card">
+                <div class="alert-header">
+                    <div>
+                        <h3>{{ alert.title }}</h3>
+                        <code>{{ alert.rule_id }}</code>
+                    </div>
+                    <div>
+                        <span class="badge {{ alert.severity }}">
+                            {{ alert.severity }}
+                        </span>
+                        <strong> Risk {{ alert.risk_score }}/100</strong>
+                    </div>
+                </div>
+
+                <div class="alert-body">
+                    <p>{{ alert.description }}</p>
+
+                    <div class="details-grid">
+                        <div class="detail">
+                            <strong>Source</strong>
+                            {{
+                                source_labels.get(
+                                    alert.source,
+                                    alert.source
+                                )
+                            }}
+                        </div>
+                        <div class="detail">
+                            <strong>Detected</strong>
+                            {{
+                                alert.detected_at | utc_datetime
+                            }}
+                        </div>
+                        <div class="detail">
+                            <strong>Source IP</strong>
+                            {{ alert.source_ip or "Not available" }}
+                        </div>
+                        <div class="detail">
+                            <strong>User</strong>
+                            {{ alert.user_name or "Not available" }}
+                        </div>
+                        <div class="detail">
+                            <strong>Resource</strong>
+                            {{ alert.resource or "Not available" }}
+                        </div>
+                        <div class="detail">
+                            <strong>MITRE ATT&amp;CK</strong>
+                            {% if alert.mitre_techniques %}
+                                {{ alert.mitre_techniques | join(", ") }}
+                            {% else %}
+                                Operational finding
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <h4>Evidence</h4>
+                    <ul>
+                        {% for evidence in alert.evidence %}
+                        <li>{{ evidence }}</li>
+                        {% endfor %}
+                    </ul>
+
+                    <h4>Recommended Response</h4>
+                    <p>{{ alert.recommended_action }}</p>
+
+                    <h4>False-Positive Considerations</h4>
+                    <ul>
+                        {% for note in alert.false_positive_notes %}
+                        <li>{{ note }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+
+    <footer>
+        Generated by the Multi-Source Infrastructure
+        Security Analytics Platform.
+    </footer>
+</div>
+</body>
+</html>
