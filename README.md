@@ -14,6 +14,40 @@ Linux authentication logs, and Cisco IOS infrastructure telemetry.
 The project demonstrates practical security engineering concepts commonly used
 in cloud infrastructure monitoring, detection engineering, and SIEM pipelines.
 
+## Table of Contents
+
+- [Why It Matters](#why-it-matters)
+- [Engineering Ownership](#engineering-ownership)
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Key Capabilities](#key-capabilities)
+- [Processing Pipeline](#processing-pipeline)
+- [Detection Coverage](#detection-coverage)
+- [Risk Classification](#risk-classification)
+- [Analysis Evidence](#analysis-evidence)
+- [Quick Start](#quick-start)
+- [OpenSearch Integration](#opensearch-integration)
+- [Quality and Security Validation](#quality-and-security-validation)
+- [Continuous Integration](#continuous-integration)
+- [Engineering Challenges and Solutions](#engineering-challenges-and-solutions)
+- [Security Design](#security-design)
+- [Project Structure](#project-structure)
+- [Current Limitations](#current-limitations)
+- [Roadmap](#roadmap)
+- [License](#license)
+
+## Why It Matters
+
+Cloud, operating system, and network telemetry rarely arrive in a shared schema. When those sources remain isolated, security teams lose investigation context across identities, addresses, resources, and timestamps.
+
+This project demonstrates a practical approach for unifying AWS CloudTrail, Linux authentication, and Cisco IOS telemetry into one security analytics pipeline. It applies deterministic detections, risk scoring, and cross-source correlation before producing investigation-ready reports and optional OpenSearch indices.
+
+## Engineering Ownership
+
+I designed and implemented this repository as an end-to-end infrastructure security analytics project. The work includes source-specific parsers, an ECS-inspired event model, YAML-configured detection rules, risk scoring, cross-source correlation, HTML/JSON/CSV reporting, optional OpenSearch indexing, Docker-based local validation, automated testing, and multi-version GitHub Actions CI.
+
+Architecture decisions, implementation trade-offs, encountered problems, current limitations, and planned extensions are documented so that the repository can be reviewed and reproduced rather than treated as a black-box demonstration.
+
 ## Overview
 
 Infrastructure environments produce telemetry in incompatible formats:
@@ -25,6 +59,12 @@ Infrastructure environments produce telemetry in incompatible formats:
 This project converts those heterogeneous records into a shared security event
 model, applies deterministic detection rules, assigns risk scores, correlates
 related activity, and exports investigation-ready reports.
+
+## Architecture
+
+![Infrastructure Security Analytics Architecture](docs/evidence/00-architecture-overview.svg)
+
+The diagram shows the runtime event flow from infrastructure telemetry through parsing, normalization, detection, scoring, correlation, and reporting. Detailed processing stages and design decisions are documented in [docs/architecture.md](docs/architecture.md). The editable Graphviz source is available in [docs/diagrams/architecture.dot](docs/diagrams/architecture.dot).
 
 ## Key Capabilities
 
@@ -41,32 +81,6 @@ related activity, and exports investigation-ready reports.
 - Typer-based command-line interface
 - Automated quality, security, and test validation
 - Multi-version CI for Python 3.12, 3.13, and 3.14
-
-## Architecture
-
-```mermaid
-flowchart LR
-    AWS["AWS CloudTrail"] --> AP["CloudTrail Parser"]
-    Linux["Linux Authentication Logs"] --> LP["Linux Parser"]
-    Cisco["Cisco IOS Logs"] --> CP["Cisco Parser"]
-
-    AP --> N["ECS-Style Normalization"]
-    LP --> N
-    CP --> N
-
-    N --> D["Detection Engine"]
-    D --> S["Risk Scoring"]
-    S --> C["Cross-Source Correlation"]
-
-    C --> HTML["HTML Report"]
-    C --> JSON["Structured JSON"]
-    C --> CSV["Security Alerts CSV"]
-    C --> OS["OpenSearch Export"]
-```
-
-Detailed architecture, processing stages, security decisions, limitations, and
-future extensions are documented in
-[`docs/architecture.md`](docs/architecture.md).
 
 ## Processing Pipeline
 
@@ -124,6 +138,55 @@ Detection outputs can include:
 
 All severity boundaries are validated through parameterized automated tests.
 
+## Analysis Evidence
+
+The following evidence was generated from the included synthetic telemetry and the validated local execution path.
+
+### Security Report Overview
+
+![Infrastructure Security Analytics Report](docs/evidence/01-report-overview.png)
+
+### AWS Critical Detection
+
+![AWS CloudTrail Critical Detection](docs/evidence/02-aws-critical-detection.png)
+
+### Live OpenSearch Indexing
+
+![Live OpenSearch Indexing Validation](docs/evidence/07-opensearch-live-validation.png)
+
+<details>
+<summary><strong>Linux correlation alert</strong></summary>
+
+<br>
+
+![Linux Correlation Alert](docs/evidence/03-linux-correlation-alert.png)
+
+</details>
+
+<details>
+<summary><strong>Cisco IOS detection</strong></summary>
+
+<br>
+
+![Cisco IOS Detection](docs/evidence/04-cisco-detection.png)
+
+</details>
+
+<details>
+<summary><strong>Automated validation and CLI execution evidence</strong></summary>
+
+<br>
+
+#### Automated Validation
+
+![Automated Validation Results](docs/evidence/05-automated-validation.png)
+
+#### CLI Analysis Results
+
+![CLI Analysis Results](docs/evidence/06-cli-analysis-results.png)
+
+</details>
+
 ## Quick Start
 
 ### Requirements
@@ -174,38 +237,6 @@ contain environment-specific data.
 security-analytics --help
 ```
 
-## Analysis Evidence
-
-### Security Report Overview
-
-![Security report overview](docs/evidence/01-report-overview.png)
-
-### AWS Critical Detection
-
-![AWS critical detection](docs/evidence/02-aws-critical-detection.png)
-
-### Linux Correlation Alert
-
-![Linux correlation alert](docs/evidence/03-linux-correlation-alert.png)
-
-### Cisco Detection
-
-![Cisco detection](docs/evidence/04-cisco-detection.png)
-
-<details>
-<summary><strong>Automated validation evidence</strong></summary>
-
-![Automated validation](docs/evidence/05-automated-validation.png)
-
-</details>
-
-<details>
-<summary><strong>CLI analysis evidence</strong></summary>
-
-![CLI analysis results](docs/evidence/06-cli-analysis-results.png)
-
-</details>
-
 ## OpenSearch Integration
 
 OpenSearch export is optional and failure-isolated from the primary analysis workflow.
@@ -242,13 +273,6 @@ Stop the local environment when finished:
 ```bash
 docker compose down
 ```
-
-<details>
-<summary><strong>Live OpenSearch indexing evidence</strong></summary>
-
-![Live OpenSearch validation](docs/evidence/07-opensearch-live-validation.png)
-
-</details>
 
 ## Quality and Security Validation
 

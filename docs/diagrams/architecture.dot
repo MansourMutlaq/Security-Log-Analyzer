@@ -1,0 +1,337 @@
+digraph InfrastructureSecurityAnalytics {
+    graph [
+        rankdir=TB,
+        bgcolor="#0B1220",
+        pad="0.25",
+        nodesep="0.48",
+        ranksep="0.58",
+        splines=ortho,
+        outputorder=edgesfirst,
+        newrank=true,
+        fontname="Helvetica"
+    ];
+
+    node [
+        shape=box,
+        style="rounded,filled",
+        fontname="Helvetica",
+        fontsize=12,
+        fontcolor="#F8FAFC",
+        color="#475569",
+        penwidth=1.3,
+        margin="0.20,0.13"
+    ];
+
+    edge [
+        color="#94A3B8",
+        penwidth=1.5,
+        arrowsize=0.75
+    ];
+
+    /* =========================================================
+       1. INFRASTRUCTURE LOG SOURCES
+       ========================================================= */
+
+    subgraph cluster_sources {
+        label=<<B>1. Infrastructure Log Sources</B>>;
+        labelloc="t";
+        fontsize=16;
+        fontcolor="#E2E8F0";
+
+        color="#334155";
+        fillcolor="#0F1B2D";
+        style="rounded,filled";
+        penwidth=1.2;
+        margin=18;
+
+        aws [
+            label="AWS CloudTrail\nJSON Events",
+            fillcolor="#174A88",
+            color="#3B82F6",
+            width=2.15
+        ];
+
+        linux [
+            label="Linux Authentication\nand Sudo Logs",
+            fillcolor="#174A88",
+            color="#3B82F6",
+            width=2.35
+        ];
+
+        cisco [
+            label="Cisco IOS\nSyslog Events",
+            fillcolor="#174A88",
+            color="#3B82F6",
+            width=2.15
+        ];
+
+        {
+            rank=same;
+            aws;
+            linux;
+            cisco;
+        }
+
+        aws -> linux [style=invis, weight=10];
+        linux -> cisco [style=invis, weight=10];
+    }
+
+    /* =========================================================
+       2. SOURCE-SPECIFIC PARSERS
+       ========================================================= */
+
+    subgraph cluster_parsers {
+        label=<<B>2. Source-Specific Parsers</B>>;
+        labelloc="t";
+        fontsize=16;
+        fontcolor="#E2E8F0";
+
+        color="#334155";
+        fillcolor="#0F1B2D";
+        style="rounded,filled";
+        penwidth=1.2;
+        margin=18;
+
+        aws_parser [
+            label="CloudTrail Parser",
+            fillcolor="#0E6475",
+            color="#22D3EE",
+            width=2.15
+        ];
+
+        linux_parser [
+            label="Linux Auth Parser",
+            fillcolor="#0E6475",
+            color="#22D3EE",
+            width=2.35
+        ];
+
+        cisco_parser [
+            label="Cisco IOS Parser",
+            fillcolor="#0E6475",
+            color="#22D3EE",
+            width=2.15
+        ];
+
+        {
+            rank=same;
+            aws_parser;
+            linux_parser;
+            cisco_parser;
+        }
+
+        aws_parser -> linux_parser [style=invis, weight=10];
+        linux_parser -> cisco_parser [style=invis, weight=10];
+    }
+
+    /* =========================================================
+       3-6. CORE ANALYTICS PIPELINE
+       ========================================================= */
+
+    normalization [
+        label="3. ECS-Inspired Normalization\nUnified Security Event Model",
+        fillcolor="#1D5EC8",
+        color="#60A5FA",
+        penwidth=1.6,
+        width=3.45
+    ];
+
+    detection [
+        label="4. Detection Engine\nRule-Based Security Analytics",
+        fillcolor="#5936B5",
+        color="#A78BFA",
+        width=3.15
+    ];
+
+    scoring [
+        label="5. Risk Scoring\nSeverity Classification",
+        fillcolor="#9A6500",
+        color="#FBBF24",
+        width=3.15
+    ];
+
+    correlation [
+        label="6. Cross-Source Correlation\nContext Enrichment",
+        fillcolor="#A33468",
+        color="#F472B6",
+        width=3.30
+    ];
+
+    output_hub [
+        shape=point,
+        label="",
+        width=0.04,
+        height=0.04,
+        style=filled,
+        color="#94A3B8",
+        fillcolor="#94A3B8"
+    ];
+
+    /* =========================================================
+       7. REPORTING AND SEARCH OUTPUTS
+       ========================================================= */
+
+    subgraph cluster_outputs {
+        label=<<B>7. Reporting and Search Outputs</B>>;
+        labelloc="t";
+        fontsize=16;
+        fontcolor="#E2E8F0";
+
+        color="#334155";
+        fillcolor="#0F1B2D";
+        style="rounded,filled";
+        penwidth=1.2;
+        margin=20;
+
+        html [
+            label="HTML Security Report",
+            fillcolor="#16733B",
+            color="#4ADE80",
+            width=2.35
+        ];
+
+        structured [
+            label="JSON Report\nCSV Alerts",
+            fillcolor="#16733B",
+            color="#4ADE80",
+            width=2.10
+        ];
+
+        opensearch [
+            label="OpenSearch Export\nOptional Integration",
+            fillcolor="#16733B",
+            color="#4ADE80",
+            width=2.35
+        ];
+
+        evidence [
+            label="Investigation-Ready\nEvidence",
+            fillcolor="#16733B",
+            color="#4ADE80",
+            width=2.30
+        ];
+
+        {
+            rank=same;
+            html;
+            structured;
+            opensearch;
+            evidence;
+        }
+
+        html -> structured [style=invis, weight=10];
+        structured -> opensearch [style=invis, weight=10];
+        opensearch -> evidence [style=invis, weight=10];
+    }
+
+    /* =========================================================
+       8. CROSS-CUTTING VALIDATION AND DELIVERY CONTROLS
+       ========================================================= */
+
+    subgraph cluster_controls {
+        label=<<B>8. Cross-Cutting Validation and Delivery Controls</B>>;
+        labelloc="t";
+        fontsize=16;
+        fontcolor="#E2E8F0";
+
+        color="#3B82F6";
+        fillcolor="#0F1726";
+        style="rounded,dashed,filled";
+        penwidth=1.2;
+        margin=20;
+
+        pytest [
+            label="Pytest\n47 Tests",
+            fillcolor="#263548",
+            color="#64748B",
+            width=1.85
+        ];
+
+        coverage [
+            label="Coverage\n92.98%",
+            fillcolor="#263548",
+            color="#64748B",
+            width=1.85
+        ];
+
+        ruff [
+            label="Ruff\nStatic Analysis",
+            fillcolor="#263548",
+            color="#64748B",
+            width=1.90
+        ];
+
+        bandit [
+            label="Bandit\nSecurity Scan",
+            fillcolor="#263548",
+            color="#64748B",
+            width=1.90
+        ];
+
+        actions [
+            label="GitHub Actions CI\nPython 3.12-3.14",
+            fillcolor="#263548",
+            color="#64748B",
+            width=2.35
+        ];
+
+        docker [
+            label="Docker Compose\nOpenSearch Validation",
+            fillcolor="#263548",
+            color="#64748B",
+            width=2.35
+        ];
+
+        {
+            rank=same;
+            pytest;
+            coverage;
+            ruff;
+        }
+
+        {
+            rank=same;
+            bandit;
+            actions;
+            docker;
+        }
+
+        pytest -> coverage [style=invis, weight=10];
+        coverage -> ruff [style=invis, weight=10];
+
+        bandit -> actions [style=invis, weight=10];
+        actions -> docker [style=invis, weight=10];
+
+        pytest -> bandit [style=invis, weight=8];
+        coverage -> actions [style=invis, weight=8];
+        ruff -> docker [style=invis, weight=8];
+    }
+
+    /* =========================================================
+       RUNTIME EVENT FLOW
+       ========================================================= */
+
+    aws -> aws_parser;
+    linux -> linux_parser;
+    cisco -> cisco_parser;
+
+    aws_parser -> normalization;
+    linux_parser -> normalization;
+    cisco_parser -> normalization;
+
+    normalization -> detection;
+    detection -> scoring;
+    scoring -> correlation;
+    correlation -> output_hub;
+
+    output_hub -> html;
+    output_hub -> structured;
+    output_hub -> opensearch;
+    output_hub -> evidence;
+
+    /* Invisible layout constraints only */
+    html -> pytest [style=invis, weight=5];
+    structured -> coverage [style=invis, weight=5];
+    opensearch -> actions [style=invis, weight=5];
+    evidence -> docker [style=invis, weight=5];
+}
