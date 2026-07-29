@@ -42,3 +42,7 @@ Thumbs.db
 
 # Generated coverage reports
 coverage.xml
+
+# Synthetic log fixtures required by tests and demonstrations.
+!samples/cisco_ios/security_events.log
+!samples/linux/auth_attack.log

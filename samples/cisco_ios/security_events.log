@@ -1,0 +1,5 @@
+Jul 27 20:10:01 CORE-01 %SEC_LOGIN-4-LOGIN_FAILED: Login failed [user: admin] [Source: 198.51.100.10] [localport: 22] [Reason: Login Authentication Failed]
+Jul 27 20:10:12 CORE-01 %SEC_LOGIN-5-LOGIN_SUCCESS: Login Success [user: netadmin] [Source: 198.51.100.11] [localport: 22]
+Jul 27 20:12:00 CORE-01 %SYS-5-CONFIG_I: Configured from console by netadmin on vty0 (198.51.100.11)
+Jul 27 20:14:10 DIST-01 %LINK-3-UPDOWN: Interface GigabitEthernet0/1, changed state to down
+Jul 27 20:14:29 DIST-01 %LINK-3-UPDOWN: Interface GigabitEthernet0/1, changed state to up
