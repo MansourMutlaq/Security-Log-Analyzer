@@ -9,52 +9,11 @@ and generates structured security reports.
 
 ## Architecture Diagram
 
-```mermaid
-flowchart LR
-    subgraph Sources["Infrastructure Log Sources"]
-        AWS["AWS CloudTrail<br/>JSON Lines"]
-        Linux["Linux Authentication Logs<br/>Syslog"]
-        Cisco["Cisco IOS Security Logs<br/>Syslog"]
-    end
+![Infrastructure Security Analytics Architecture](evidence/00-architecture-overview.svg)
 
-    subgraph Ingestion["Ingestion and Parsing"]
-        CloudTrailParser["CloudTrail Parser"]
-        LinuxParser["Linux Authentication Parser"]
-        CiscoParser["Cisco IOS Parser"]
-    end
+The runtime analytics path processes infrastructure telemetry through source-specific parsing, ECS-inspired normalization, deterministic detection, risk scoring, cross-source correlation, and reporting.
 
-    subgraph Analytics["Security Analytics Pipeline"]
-        Normalization["ECS-Style Normalization"]
-        Detection["Rule-Based Detection Engine"]
-        Scoring["Risk Scoring and Severity Classification"]
-        Correlation["Cross-Source Event Correlation"]
-    end
-
-    subgraph Outputs["Reporting and Integration"]
-        HTML["HTML Security Report"]
-        JSON["Structured JSON"]
-        CSV["Security Alerts CSV"]
-        OpenSearch["OpenSearch Export"]
-    end
-
-    AWS --> CloudTrailParser
-    Linux --> LinuxParser
-    Cisco --> CiscoParser
-
-    CloudTrailParser --> Normalization
-    LinuxParser --> Normalization
-    CiscoParser --> Normalization
-
-    Normalization --> Detection
-    Detection --> Scoring
-    Scoring --> Correlation
-
-    Correlation --> HTML
-    Correlation --> JSON
-    Correlation --> CSV
-    Correlation --> OpenSearch
-
-```
+The dashed assurance layer represents repository validation and delivery controls. It is not part of the runtime event flow.
 
 ## Processing Stages
 
@@ -134,8 +93,8 @@ evidence is maintained under `docs/evidence/`.
 
 The project currently validates:
 
-- 40 automated tests
-- 94.20% statement coverage
+- 47 automated tests
+- 92.98% statement coverage
 - 100% risk-scoring boundary coverage
 - Ruff static analysis
 - Bandit security scanning

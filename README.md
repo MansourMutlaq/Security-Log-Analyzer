@@ -14,7 +14,8 @@ Linux authentication logs, and Cisco IOS infrastructure telemetry.
 The project demonstrates practical security engineering concepts commonly used
 in cloud infrastructure monitoring, detection engineering, and SIEM pipelines.
 
-## Table of Contents
+<details>
+<summary><strong>Table of Contents</strong></summary>
 
 - [Why It Matters](#why-it-matters)
 - [Engineering Ownership](#engineering-ownership)
@@ -35,6 +36,8 @@ in cloud infrastructure monitoring, detection engineering, and SIEM pipelines.
 - [Current Limitations](#current-limitations)
 - [Roadmap](#roadmap)
 - [License](#license)
+
+</details>
 
 ## Why It Matters
 
@@ -64,7 +67,9 @@ related activity, and exports investigation-ready reports.
 
 ![Infrastructure Security Analytics Architecture](docs/evidence/00-architecture-overview.svg)
 
-The diagram shows the runtime event flow from infrastructure telemetry through parsing, normalization, detection, scoring, correlation, and reporting. Detailed processing stages and design decisions are documented in [docs/architecture.md](docs/architecture.md). The editable Graphviz source is available in [docs/diagrams/architecture.dot](docs/diagrams/architecture.dot).
+The diagram separates the runtime analytics pipeline from the cross-cutting validation and delivery controls. The dashed assurance layer is not part of the runtime event flow.
+
+Detailed architecture and design decisions are documented in [docs/architecture.md](docs/architecture.md).
 
 ## Key Capabilities
 
@@ -154,38 +159,21 @@ The following evidence was generated from the included synthetic telemetry and t
 
 ![Live OpenSearch Indexing Validation](docs/evidence/07-opensearch-live-validation.png)
 
-<details>
-<summary><strong>Linux correlation alert</strong></summary>
-
-<br>
+### Linux Correlation Alert
 
 ![Linux Correlation Alert](docs/evidence/03-linux-correlation-alert.png)
 
-</details>
-
-<details>
-<summary><strong>Cisco IOS detection</strong></summary>
-
-<br>
+### Cisco IOS Detection
 
 ![Cisco IOS Detection](docs/evidence/04-cisco-detection.png)
 
-</details>
-
-<details>
-<summary><strong>Automated validation and CLI execution evidence</strong></summary>
-
-<br>
-
-#### Automated Validation
+### Automated Validation
 
 ![Automated Validation Results](docs/evidence/05-automated-validation.png)
 
-#### CLI Analysis Results
+### CLI Analysis Results
 
 ![CLI Analysis Results](docs/evidence/06-cli-analysis-results.png)
-
-</details>
 
 ## Quick Start
 
@@ -351,10 +339,16 @@ Detailed implementation decisions and trade-offs are documented in [`docs/engine
 
 ```text
 .
-├── .github/workflows/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── config/
+│   └── detection_rules.yml
 ├── docs/
 │   ├── architecture.md
+│   ├── engineering-notes.md
+│   ├── diagrams/
+│   │   └── architecture.dot
 │   └── evidence/
 ├── reports/
 ├── samples/
