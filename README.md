@@ -1,6 +1,6 @@
 # Infrastructure Security Analytics
 
-[![Security Analytics CI](https://github.com/MansourMutlaq/Security-Log-Analyzer/actions/workflows/ci.yml/badge.svg)](https://github.com/MansourMutlaq/Security-Log-Analyzer/actions/workflows/ci.yml)
+[![Security Analytics CI](https://github.com/MansourMutlaq/infrastructure-security-analytics/actions/workflows/ci.yml/badge.svg)](https://github.com/MansourMutlaq/infrastructure-security-analytics/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.12%20%7C%203.13%20%7C%203.14-blue)
 ![Tests](https://img.shields.io/badge/tests-47%20passed-brightgreen)
 ![Coverage](https://img.shields.io/badge/Coverage-92.98%25-brightgreen)
@@ -186,8 +186,8 @@ The following evidence was generated from the included synthetic telemetry and t
 ### Installation
 
 ```bash
-git clone https://github.com/MansourMutlaq/Security-Log-Analyzer.git
-cd Security-Log-Analyzer
+git clone https://github.com/MansourMutlaq/infrastructure-security-analytics.git
+cd infrastructure-security-analytics
 
 python3 -m venv .venv
 source .venv/bin/activate
